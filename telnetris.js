@@ -472,7 +472,7 @@ var Game = function(socket, num)
 
 
 // check whether we need (and have) root
-if (serverPort < 1024 && process.getuid() != 0) {
+if (serverPort < 1024 && process.getuid && process.getuid() != 0) {
 	console.log("You selected port %d. Using ports < 1024 needs root privileges.", serverPort);
 	console.log("Please restart as root or choose different port.");
 
@@ -484,13 +484,13 @@ if (serverPort < 1024 && process.getuid() != 0) {
 	});
 	server.on('listening', function() {
 		// strip off root privileges if we have them
-		if (process.getgid() == 0) {
+		if (process.getgid && process.getgid() == 0) {
 			console.log("giving up root group...");
 			try        { process.setgid("nobody"); }
 			catch(err) { process.setgid(65534); }
 		}
 
-		if (process.getuid() == 0) {
+		if (process.getuid && process.getuid() == 0) {
 			console.log("giving up root user...");
 			try        { process.setuid("nobody"); }
 			catch(err) { process.setuid(65534); }

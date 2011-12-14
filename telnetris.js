@@ -187,6 +187,10 @@ var Game = function(socket, num)
 				}
 			}
 			
+			// display pause key information
+			if (i == 18)
+				line += "\tpress space to (un)pause";
+			
 			_this.socket.write(line);
 		}
 		
@@ -342,6 +346,7 @@ var Game = function(socket, num)
 			else
 				_this.sendField();
 		
+		
 		// move right
 		} else if (data == cursor_right && _this.currentBlock.x + _this.currentBlock.width < 10) {
 			_this.currentBlock.x++;
@@ -351,7 +356,8 @@ var Game = function(socket, num)
 				_this.currentBlock.x--;
 			else
 				_this.sendField();
-			
+		
+		
 		// move down
 		} else if (data == cursor_down) {
 			_this.currentBlock.y++;
@@ -361,7 +367,7 @@ var Game = function(socket, num)
 				_this.currentBlock.y--;
 			else
 				_this.sendField();
-				
+		
 		
 		// rotate
 		} else if (data == cursor_up) {
@@ -386,6 +392,17 @@ var Game = function(socket, num)
 				
 			} else {
 				_this.sendField();
+			}
+		
+		
+		// pause (space key)
+		} else if (data == '20') {
+			if (_this.paused) {
+				_this.paused = false;
+				_this.proceed();
+			} else {
+				_this.paused = true;
+				clearTimeout(_this.timeout);
 			}
 		}
 	};

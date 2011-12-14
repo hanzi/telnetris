@@ -40,11 +40,13 @@ var serverHost = "0.0.0.0";
  */
 var Game = function(socket, num)
 {
-	var _this    = this;
-	this.num     = num;
-	this.socket  = socket;
-	this.field   = false;
-	this.timeout = false;
+	var _this      = this;
+	this.num       = num;
+	this.socket    = socket;
+	this.field     = false;
+	this.timeout   = false;
+	this.lines     = 0;
+	this.startTime = (new Date()).getTime();
 	this.currentBlock = {
 		x:      0,
 		y:      0,
@@ -143,6 +145,14 @@ var Game = function(socket, num)
 			}
 			
 			line += "|";
+			
+			// display stats
+			if (i == 1)
+				line += "\tlines: " + _this.lines;
+			
+			if (i == 3)
+				line += "\ttime:  " + _this.displayTime();
+			
 			_this.socket.write(line);
 		}
 		
@@ -254,6 +264,7 @@ var Game = function(socket, num)
 			
 			// if one is found, move all lines above them one line down
 			if (tmp) {
+				_this.lines++;
 				for (k = i; k >= 0; k--) {
 					for (j = 0; j < 10; j++) {
 						if (k == 0)
@@ -348,6 +359,35 @@ var Game = function(socket, num)
 		if (_this.timeout)
 			clearTimeout(_this.timeout);
 	};
+	
+	
+	/**
+	 * Calculates how long the client has played and generates a time string
+	 */
+	this.displayTime = function()
+	{
+		var string, hours = 0, minutes = 0, seconds;
+		
+		seconds = (new Date()).getTime() - _this.startTime;
+		seconds = Math.floor(seconds / 1000);
+		
+		hours   = Math.floor(seconds / 3600);
+		seconds = seconds % 3600;
+		
+		minutes = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if (hours < 10)
+			hours = "0" + hours;
+		
+		if (minutes < 10)
+			minutes = "0" + minutes;
+		
+		if (seconds < 10)
+			seconds = "0" + seconds;
+		
+		return hours + ":" + minutes + ":" + seconds;
+	}
 	
 	
 	// call constructor

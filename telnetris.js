@@ -56,6 +56,11 @@ var Game = function(socket, num)
 		num:    0,
 		dir:    0
 	};
+	this.scheduledBlock = {
+		type:   false,
+		num:    0,
+		dir:    0
+	};
 	
 	
 	/**
@@ -82,6 +87,7 @@ var Game = function(socket, num)
 		}
 		
 		// and go!
+		_this.scheduleBlock();
 		_this.nextBlock();
 	};
 	
@@ -91,17 +97,15 @@ var Game = function(socket, num)
 	 */
 	this.nextBlock = function()
 	{
-		var type      = Math.floor(Math.random() * blocks.length);
-		var direction = Math.floor(Math.random() * blocks[type].length);
-		
-		_this.currentBlock.type   = blocks[type][direction];
+		_this.currentBlock.type   = _this.scheduledBlock.type;
 		_this.currentBlock.height = _this.currentBlock.type.length;
 		_this.currentBlock.width  = _this.currentBlock.type[0].length;
 		_this.currentBlock.x      = 5 - Math.ceil(_this.currentBlock.width / 2);
 		_this.currentBlock.y      = 0;
-		_this.currentBlock.num    = type;
-		_this.currentBlock.dir    = direction;
+		_this.currentBlock.num    = _this.scheduledBlock.num;
+		_this.currentBlock.dir    = _this.scheduledBlock.dir;
 		
+		_this.scheduleBlock();
 		_this.sendField();
 		
 		if (_this.collisionOccurred()) {
@@ -110,6 +114,22 @@ var Game = function(socket, num)
 		} else {
 			_this.timeout = setTimeout(_this.proceed, 500);
 		}
+	};
+	
+	
+	/**
+	 * Schedules the next block
+	 */
+	this.scheduleBlock = function()
+	{
+		var type      = Math.floor(Math.random() * blocks.length);
+		var direction = Math.floor(Math.random() * blocks[type].length);
+		
+		_this.scheduledBlock = {
+			type:   blocks[type][direction],
+			num:    type,
+			dir:    direction
+		};
 	};
 	
 	
@@ -152,6 +172,20 @@ var Game = function(socket, num)
 			
 			if (i == 3)
 				line += "\ttime:  " + _this.displayTime();
+			
+			// display next scheduled block
+			if (i == 8)
+				line += "\tnext block:";
+			
+			if (i >= 10 && i < 14) {
+				line += "\t  ";
+				for (j = 0; j < 4; j++) {
+					if (_this.scheduledBlock.type[i-10] && _this.scheduledBlock.type[i-10][j])
+						line += "<>";
+					else
+						line += "  ";
+				}
+			}
 			
 			_this.socket.write(line);
 		}

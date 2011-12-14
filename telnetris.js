@@ -454,7 +454,8 @@ var Game = function(socket, num)
 	
 	
 	/**
-	 *
+	 * Calculates delay by number of solved lines (effects an acceleration
+	 * over time)
 	 */
 	this.getDelay = function()
 	{

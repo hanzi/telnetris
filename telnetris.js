@@ -340,7 +340,7 @@ var Game = function(socket, num)
 		data = data.toString('hex');
 		
 		// move left
-		if (data == cursor_left && _this.currentBlock.x > 0) {
+		if (data == cursor_left && _this.currentBlock.x > 0 && ! _this.paused) {
 			_this.currentBlock.x--;
 			
 			if (_this.collisionOccurred())
@@ -351,7 +351,7 @@ var Game = function(socket, num)
 		
 		
 		// move right
-		} else if (data == cursor_right && _this.currentBlock.x + _this.currentBlock.width < 10) {
+		} else if (data == cursor_right && _this.currentBlock.x + _this.currentBlock.width < 10 && ! _this.paused) {
 			_this.currentBlock.x++;
 			
 			if (_this.collisionOccurred())
@@ -362,7 +362,7 @@ var Game = function(socket, num)
 		
 		
 		// move down
-		} else if (data == cursor_down) {
+		} else if (data == cursor_down && ! _this.paused) {
 			_this.currentBlock.y++;
 			
 			if (_this.collisionOccurred())
@@ -373,7 +373,7 @@ var Game = function(socket, num)
 		
 		
 		// rotate
-		} else if (data == cursor_up) {
+		} else if (data == cursor_up && ! _this.paused) {
 			var oldDirection = _this.currentBlock.dir;
 			var oldType      = _this.currentBlock.type;
 			var oldHeight    = _this.currentBlock.height;

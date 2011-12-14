@@ -112,7 +112,7 @@ var Game = function(socket, num)
 			// game over
 			_this.socket.end();
 		} else {
-			_this.timeout = setTimeout(_this.proceed, 500);
+			_this.timeout = setTimeout(_this.proceed, _this.getDelay());
 		}
 	};
 	
@@ -187,9 +187,12 @@ var Game = function(socket, num)
 				}
 			}
 			
-			// display pause key information
+			// display key information
 			if (i == 18)
 				line += "\tpress space to (un)pause";
+			
+			if (i == 19)
+				line += "\tarrow keys to navigate block";
 			
 			_this.socket.write(line);
 		}
@@ -262,14 +265,14 @@ var Game = function(socket, num)
 			_this.sendField();
 			
 			if (_this.hasFullLines()) {
-				_this.timeout = setTimeout(_this.clearFullLines, 500);
+				_this.timeout = setTimeout(_this.clearFullLines, _this.getDelay());
 			} else {
-				_this.timeout = setTimeout(_this.nextBlock, 500);
+				_this.timeout = setTimeout(_this.nextBlock, _this.getDelay());
 			}
 			
 		} else {
 			_this.sendField();
-			_this.timeout = setTimeout(_this.proceed, 500);
+			_this.timeout = setTimeout(_this.proceed, _this.getDelay());
 		}
 	};
 	
@@ -325,7 +328,7 @@ var Game = function(socket, num)
 		
 		// send updated field and go on with the game
 		_this.sendField();
-		_this.timeout = setTimeout(_this.nextBlock, 500);
+		_this.timeout = setTimeout(_this.nextBlock, _this.getDelay());
 	};
 	
 	
@@ -447,7 +450,20 @@ var Game = function(socket, num)
 			seconds = "0" + seconds;
 		
 		return hours + ":" + minutes + ":" + seconds;
-	}
+	};
+	
+	
+	/**
+	 *
+	 */
+	this.getDelay = function()
+	{
+		var delay = 500 - _this.lines * 5;
+		if (delay < 100)
+			delay = 100;
+		
+		return delay;
+	};
 	
 	
 	// call constructor

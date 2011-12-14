@@ -257,9 +257,9 @@ var Game = function(socket, num)
 				for (k = i; k >= 0; k--) {
 					for (j = 0; j < 10; j++) {
 						if (k == 0)
-							_this.field[k] = false;
+							_this.field[k][j] = false;
 						else
-							_this.field[k] = _this.field[k-1];
+							_this.field[k][j] = _this.field[k-1][j];
 					}
 				}
 			}

@@ -190,7 +190,16 @@ var Game = function(socket, num)
 			_this.socket.write(line);
 		}
 		
-		_this.socket.write("\r\n\t+--------------------+");
+		// bottom line, leave spaces where current block is above
+		line = "\r\n\t+";
+		for (i = 0; i < 10; i++) {
+			if (i >= _this.currentBlock.x && i < _this.currentBlock.x + _this.currentBlock.width)
+				line += "  ";
+			else
+				line += "--";
+		}
+		line += "+";
+		_this.socket.write(line);
 		
 		// reset cursor to top left position
 		for (i = 0; i < 30; i++)

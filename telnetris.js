@@ -377,7 +377,7 @@ var Game = function(socket, num)
 			_this.currentBlock.height = _this.currentBlock.type.length;
 			_this.currentBlock.width  = _this.currentBlock.type[0].length;
 			
-			if (_this.collisionOccurred()) {
+			if (_this.collisionOccurred() || _this.currentBlock.x + _this.currentBlock.width > 10) {
 				// revert changes
 				_this.currentBlock.dir    = oldDirection;
 				_this.currentBlock.type   = oldType;

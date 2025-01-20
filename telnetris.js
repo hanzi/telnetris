@@ -37,6 +37,7 @@ var DO = 253;
 var LINEMODE = 34;
 var EDIT = 1;
 var ECHO = 1;
+var SUPPRESS_GO_AHEAD = 3;
 var ESC = String.fromCharCode(0x1B);
 
 
@@ -85,28 +86,34 @@ var Game = function (socket, num) {
         // any input/keystroke immediately instead of waiting for the user
         // to press enter.
         // see: https://www.rfc-editor.org/rfc/rfc1184.html
-        socket.write(Buffer.from([IAC, DO, LINEMODE]));
-        socket.write(Buffer.from([IAC, SUBOPTION, LINEMODE, EDIT, 0]));
-        socket.write(Buffer.from([IAC, END_OF_SUBOPTION]));
+        _this.write(Buffer.from([IAC, DO, LINEMODE]));
+        _this.write(Buffer.from([IAC, SUBOPTION, LINEMODE, EDIT, 0]));
+        _this.write(Buffer.from([IAC, END_OF_SUBOPTION]));
 
         // Send Telnet options: Tell the client to not echo (display) the
         // user's input in its terminal. We don't want the user to see
         // their keystrokes because they just act as game input. Any output
         // should come from the server.
         // see: https://www.rfc-editor.org/rfc/rfc857.html
-        socket.write(Buffer.from([IAC, WILL, ECHO]));
+        _this.write(Buffer.from([IAC, WILL, ECHO]));
+
+        // Send Telnet options: Tell the client that it does not need to
+        // wait for the 'go ahead' symbol in order to transmit keystrokes
+        // (we want to receive them as soon as possible.)
+        _this.write(Buffer.from([IAC, WILL, SUPPRESS_GO_AHEAD]));
+        _this.write(Buffer.from([IAC, DO, SUPPRESS_GO_AHEAD]));
 
         // Store screen -- we are clearing the screen once the game starts,
         // but as a courtesy to the user we will restore it after a game
         // over or when they close the connection using Ctrl+C.
-        socket.write(`${ESC}[?47h`);
+        _this.write(`${ESC}[?47h`);
 
         // Hide cursor
-        socket.write(`${ESC}[?25l`);
+        _this.write(`${ESC}[?25l`);
 
         // Move cursor to (0, 0) and erase screen
-        socket.write(`${ESC}[H`);
-        socket.write(`${ESC}[J`);
+        _this.write(`${ESC}[H`);
+        _this.write(`${ESC}[J`);
 
         // prepare an empty virtual field
         _this.field = new Array(20);
@@ -118,6 +125,20 @@ var Game = function (socket, num) {
         _this.scheduleBlock();
         _this.nextBlock();
     };
+
+
+    this.write = function (data) {
+        if (_this.socket) {
+            _this.socket.write(
+                data,
+                function (error) {
+                    if (error) {
+                        _this.socket.end();
+                    }
+                }
+            );
+        }
+    }
 
 
     this.closeConnection = function (message) {
@@ -138,9 +159,7 @@ var Game = function (socket, num) {
         dataToWrite += `Lines completed: ${this.lines}\r\n`;
         dataToWrite += `Time played: ${this.displayTime()}\r\n\r\n`;
 
-        if (_this.socket && ["open", "writeOnly"].includes(_this.socket.readyState)) {
-            _this.socket.write(dataToWrite);
-        }
+        _this.write(dataToWrite);
 
         _this.socket.end();
     }
@@ -262,7 +281,7 @@ var Game = function (socket, num) {
         dataToWrite += line;
 
         if (_this.socket && ["open", "writeOnly"].includes(_this.socket.readyState)) {}
-            _this.socket.write(dataToWrite);
+            _this.write(dataToWrite);
     };
 
 
@@ -446,7 +465,10 @@ var Game = function (socket, num) {
         } else if (data == '20') {
             if (_this.paused) {
                 _this.paused = false;
-                _this.proceed();
+                if (!_this.currentBlock)
+                    _this.nextBlock();
+                else
+                    _this.proceed();
             } else {
                 _this.paused = true;
                 clearTimeout(_this.timeout);

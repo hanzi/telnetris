@@ -27,10 +27,19 @@ creating the server socket.
 Alternatively, you can create a Docker container for this script like this:
 
 ```bash
-docker build -t telnetris .
-
 # This will bind the server to port 23, the default Telnet port.
-docker run --name telnetris --expose "0.0.0.0:23:10023" telnetris
+docker run --name telnetris --expose "0.0.0.0:23:10023" ghcr.io/hanzi/telnetris:latest
+```
+
+
+### Using Docker Compose
+
+```yml
+services:
+  telnetris:
+    image: ghcr.io/hanzi/telnetris:latest
+    ports: [ "0.0.0.0:23:10023/tcp" ]
+    restart: unless-stopped
 ```
 
 

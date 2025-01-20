@@ -313,6 +313,10 @@ var Game = function (socket, num) {
      * Move block one line down
      */
     this.proceed = function () {
+        if (!_this.currentBlock.type) {
+            return _this.nextBlock();
+        }
+
         _this.currentBlock.y++;
 
         if (_this.collisionOccurred()) {
@@ -465,10 +469,7 @@ var Game = function (socket, num) {
         } else if (data == '20') {
             if (_this.paused) {
                 _this.paused = false;
-                if (!_this.currentBlock)
-                    _this.nextBlock();
-                else
-                    _this.proceed();
+                _this.proceed();
             } else {
                 _this.paused = true;
                 clearTimeout(_this.timeout);

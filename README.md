@@ -2,40 +2,42 @@ Telnetris
 =========
 
 This is a small Telnet server that offers a game of Tetris to its clients.
-It is written in JavaScript, so [Node.js](http://nodejs.org/) is required to run it.
+It is written in JavaScriptand requires [Node.js](https://nodejs.org/) to run.
 
 
 Usage
 -----
 
-Edit telnetris.js (line 31) if you want it to listen to a different port
-than 23. The interface the server listens to can be configured there as
-well.
+```
+node telnetris.sh [port] [host]
+```
 
-After that, just do
+By default, it will bind to **port 10023** and **host 0.0.0.0** (i.e. all
+interfaces.)
 
-    ./telnetris.js
+If you want it to listen to the default Telnet port (23), you will likely
+have to run the script as root (`sudo node telnetris.sh 23`.)
 
-or
-
-    node telnetris.js
-
-to start the server. It needs root privileges if you want to use a port
-< 1024.
+If run as root, the script will change its user and group to `nobody` after
+creating the server socket.
 
 
-Demo
-----
+### Using Docker
 
-Currently, a demo version is running at `hanzi.cc`:
+Alternatively, you can create a Docker container for this script like this:
 
-    telnet hanzi.cc
+```bash
+docker build -t telnetris .
+
+# This will bind the server to port 23, the default Telnet port.
+docker run --name telnetris --expose "0.0.0.0:23:10023" telnetris
+```
 
 
 License
 -------
 
-Copyright (c) 2011, Christian Kraus <hanzi@hanzi.cc>
+Copyright (c) 2011, Tino <https://github.com/hanzi>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

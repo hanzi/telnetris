@@ -5,6 +5,8 @@ This is a small Telnet server that offers a game of Tetris to its clients.
 It is written in JavaScript and requires [Node.js](https://nodejs.org/) to
 run.
 
+![Console Screenshot](screenshot.png)
+
 
 Usage
 -----

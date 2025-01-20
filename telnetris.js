@@ -77,6 +77,7 @@ var Game = function (socket, num) {
     this.initialize = function () {
         console.log(">> New client #%d (%s)", num, socket.remoteAddress);
         socket.on('data', this.handleData);
+        socket.on('error', this.handleError);
         socket.on('close', this.handleClose);
 
         // prevent server-side buffering (Nagle algorithm)
@@ -280,8 +281,7 @@ var Game = function (socket, num) {
         line += "+";
         dataToWrite += line;
 
-        if (_this.socket && ["open", "writeOnly"].includes(_this.socket.readyState)) {}
-            _this.write(dataToWrite);
+        _this.write(dataToWrite);
     };
 
 
@@ -481,6 +481,14 @@ var Game = function (socket, num) {
             _this.closeConnection("Goodbye!");
         }
     };
+
+
+    /**
+     * Callback for handling read/connection errors
+     */
+    this.handleError = function (error) {
+        console.log("-- Client %d: %s", num, error.toString());
+    }
 
 
     /**

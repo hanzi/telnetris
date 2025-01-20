@@ -2,7 +2,8 @@ Telnetris
 =========
 
 This is a small Telnet server that offers a game of Tetris to its clients.
-It is written in JavaScriptand requires [Node.js](https://nodejs.org/) to run.
+It is written in JavaScript and requires [Node.js](https://nodejs.org/) to
+run.
 
 
 Usage
@@ -46,18 +47,18 @@ services:
 License
 -------
 
-Copyright (c) 2011, Tino <https://github.com/hanzi>
+Copyright (c) 2011, [Tino](https://github.com/hanzi)    
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright
-	   notice, this list of conditions and the following disclaimer.
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
 
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE

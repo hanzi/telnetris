@@ -104,9 +104,11 @@ var Game = function (socket, num) {
         _this.write(Buffer.from([IAC, WILL, SUPPRESS_GO_AHEAD]));
         _this.write(Buffer.from([IAC, DO, SUPPRESS_GO_AHEAD]));
 
-        // Store screen -- we are clearing the screen once the game starts,
-        // but as a courtesy to the user we will restore it after a game
-        // over or when they close the connection using Ctrl+C.
+        // Store screen and cursor position -- we are clearing the screen
+        // once the game starts, but as a courtesy to the user we will
+        // restore it after a game over or when they close the connection
+        // using Ctrl+C.
+        _this.write(`${ESC}7`);
         _this.write(`${ESC}[?47h`);
 
         // Hide cursor
@@ -145,16 +147,17 @@ var Game = function (socket, num) {
     this.closeConnection = function (message) {
         let dataToWrite = "";
 
-        // Restore initial screen
+        // Restore initial screen and cursor positions
         dataToWrite += `${ESC}[?47l`;
+        dataToWrite += `${ESC}8`;
 
         // Show cursor again
         dataToWrite += `${ESC}[?25h`;
 
-        dataToWrite += "\r\n\r\n";
+        dataToWrite += "\r\n";
 
         if (message) {
-            dataToWrite += `\r\n${message}\r\n\r\n`;
+            dataToWrite += `${message}\r\n\r\n`;
         }
 
         dataToWrite += `Lines completed: ${this.lines}\r\n`;
@@ -487,8 +490,9 @@ var Game = function (socket, num) {
      * Callback for handling read/connection errors
      */
     this.handleError = function (error) {
-        console.log("-- Client %d: %s", num, error.toString());
-    }
+        // We don't really care about client errors. Probably just a bot that
+        // disconnected immediately.
+    };
 
 
     /**

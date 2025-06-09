@@ -42,9 +42,9 @@ var ESC = String.fromCharCode(0x1B);
 
 
 // Block layout customization
-var BLOCK_FALLING = process.env.BLOCK_FALLING || "<>";
-var BLOCK_BOTTOM  = process.env.BLOCK_BOTTOM  || "[]";
-var BLOCK_BACKGROUND = process.env.BLOCK_BACKGROUND || "  ";
+var BLOCK_FALLING = process.env.BLOCK_FALLING.slice(0, 2) || "<>";
+var BLOCK_BOTTOM  = process.env.BLOCK_BOTTOM.slice(0, 2)  || "[]";
+var BLOCK_BACKGROUND = process.env.BLOCK_BACKGROUND.slice(0, 2) || "  ";
 
 /**
  * Telnetris Game class

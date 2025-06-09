@@ -1,5 +1,7 @@
 FROM node:22-alpine
 
+STOPSIGNAL SIGKILL
+
 COPY telnetris.js /app/
 EXPOSE 10023
 USER nobody:nobody

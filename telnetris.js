@@ -41,6 +41,11 @@ var SUPPRESS_GO_AHEAD = 3;
 var ESC = String.fromCharCode(0x1B);
 
 
+// Block layout customization
+var BLOCK_FALLING = process.env.BLOCK_FALLING || "<>";
+var BLOCK_BOTTOM  = process.env.BLOCK_BOTTOM  || "[]";
+var BLOCK_BACKGROUND = process.env.BLOCK_BACKGROUND || "  ";
+
 /**
  * Telnetris Game class
  *
@@ -230,13 +235,13 @@ var Game = function (socket, num) {
                     j >= _this.currentBlock.x && j < _this.currentBlock.x + _this.currentBlock.width &&
                     _this.currentBlock.type[i - _this.currentBlock.y][j - _this.currentBlock.x]) {
 
-                    line += "<>";
+                    line += BLOCK_FALLING;
 
                 } else if (_this.field[i][j]) {
-                    line += "[]";
+                    line += BLOCK_BOTTOM;
 
                 } else {
-                    line += "  ";
+                    line += BLOCK_BACKGROUND;
                 }
             }
 
@@ -257,7 +262,7 @@ var Game = function (socket, num) {
                 line += "\t  ";
                 for (j = 0; j < 4; j++) {
                     if (_this.scheduledBlock.type[i - 10] && _this.scheduledBlock.type[i - 10][j])
-                        line += "<>";
+                        line += BLOCK_FALLING;
                     else
                         line += "  ";
                 }
@@ -277,7 +282,7 @@ var Game = function (socket, num) {
         line = "\r\n\t+";
         for (i = 0; i < 10; i++) {
             if (i >= _this.currentBlock.x && i < _this.currentBlock.x + _this.currentBlock.width)
-                line += "  ";
+                line += BLOCK_BACKGROUND;
             else
                 line += "--";
         }
